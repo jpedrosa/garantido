@@ -15,7 +15,7 @@ programming languages.
 But Rust can be used for all kinds of stuff, big and small. It has a growing
 community and applicability. It's cross-platform, open source, and it's mostly
 done as far as its own development goes. I hope that it will stabilize soon in
-the next year after some major shoes drop in, in the form of the async support
+the next year after some major shoes drop in the form of the async support
 and so on.
 
 ## The Name: Garantido
