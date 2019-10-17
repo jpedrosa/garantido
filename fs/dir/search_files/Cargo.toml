@@ -1,0 +1,12 @@
+[package]
+name = "search_files"
+version = "0.1.0"
+authors = ["Joao Pedrosa <joaopedrosa@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+path = { path = "../path/" }
+
+[lib]
+name = "search_files"
+path = "src/search_files.rs"
