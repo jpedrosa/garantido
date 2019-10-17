@@ -28,3 +28,5 @@ creating a rivalry that spices it up a bit. The
 ["Boi Garantido"](https://pt.wikipedia.org/wiki/Boi_Garantido) has for its
 colors the red color, which I think has to do with the name of the Rust
 programming language.
+
+# [LICENSE - MIT](LICENSE.txt)
