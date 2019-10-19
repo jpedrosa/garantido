@@ -60,6 +60,14 @@ fn sample_funky_file2() {
     assert_eq!(opts.get("--file"), Some("foo".to_string()));
 }
 
+fn sample_flag() {
+    let a = lit(vec!["--file", "-f", "--enable-logging"]);
+    let mut opts = aliasopts::AliasOpts::new();
+    opts.add("--enable-logging", aliasopts::CT::Flag)
+        .parse(a);
+    assert_eq!(opts.get("--enable-logging"), Some("".to_string()));
+}
+
 
 fn main() {
     let a: Vec<String> = env::args().collect();
@@ -70,6 +78,7 @@ fn main() {
     sample_mode();
     sample_funky_file();
     sample_funky_file2();
+    sample_flag();
     let mut opts = aliasopts::AliasOpts::new();
     opts.add("--file", aliasopts::CT::CTString)
         .add_alias("-f", "--file")
