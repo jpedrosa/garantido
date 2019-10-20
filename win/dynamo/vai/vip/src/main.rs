@@ -16,6 +16,7 @@ Usage: vip <option>
     --virtual_screen_size - Prints the width and height sizes of the combined
         screens in case of multiple monitors.
     --cursor_position - Prints the position of the cursor.
+    --left_click      - Simulates a mouse left click on the current position.
     --help            - Shows this help.
 "#);
 }
@@ -27,6 +28,7 @@ fn main() {
         .add("--screen_size", CT::Flag)
         .add("--virtual_screen_size", CT::Flag)
         .add("--cursor_position", CT::Flag)
+        .add("--left_click", CT::Flag)
         .add("--help", CT::Flag)
         .parse(a[1..].to_vec());
     if let Some(s) = opts.get("--move_cursor") {
@@ -52,6 +54,9 @@ Expected a parameter like 10,30", s);
     }
     if let Some(_) = opts.get("--virtual_screen_size") {
         println!("Virtual screen size: {:?}", dynamo::virtual_screen_size());
+    }
+    if let Some(_) = opts.get("--left_click") {
+        dynamo::left_click();
     }
     if opts.is_empty() {
         print_help();
