@@ -126,4 +126,8 @@ impl AliasOpts {
         self.loose.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.values.len() == 0 && self.loose.len() == 0
+    }
+
 }
