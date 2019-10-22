@@ -36,8 +36,8 @@ pub fn do_move_cursor(x: i32, y: i32) {
 
 #[derive(Debug)]
 pub struct ScreenSize {
-    w: i32,
-    h: i32
+    pub w: i32,
+    pub h: i32
 }
 
 pub fn screen_size() -> ScreenSize {
@@ -68,8 +68,8 @@ pub fn left_click() {
 
 #[derive(Debug)]
 pub struct Point {
-    x: i32,
-    y: i32
+    pub x: i32,
+    pub y: i32
 }
 
 pub fn cursor_position() -> Point {
