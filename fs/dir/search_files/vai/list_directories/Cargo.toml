@@ -1,0 +1,12 @@
+[package]
+name = "list_directories"
+version = "0.1.0"
+authors = ["Joao Pedrosa <joaopedrosa@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+search_files = { path = "../../" }
+path = { path = "../../../path/" }
+aliasopts = { path = "../../../../opts/aliasopts/" }
