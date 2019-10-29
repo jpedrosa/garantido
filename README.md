@@ -22,8 +22,8 @@ and so on.
 
 The name is inspired by a word in Portuguese that is symbolically associated
 with a sort of carnival that takes place in the Brazilian Amazon, state of
-Amazonas, Brazil. Garantido is the name of one of the two main attractions
-that take place there, with people associating themselves with both of them,
+Amazonas. Garantido is the name of one of the two main attractions
+that take place there, with people associating themselves with either of them,
 creating a rivalry that spices it up a bit. The 
 ["Boi Garantido"](https://pt.wikipedia.org/wiki/Boi_Garantido) has for its
 colors the red color, which I think has to do with the name of the Rust
