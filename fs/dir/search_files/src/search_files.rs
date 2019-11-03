@@ -47,3 +47,46 @@ pub fn list_directories(fp: &str, afn:
         }
     }
 }
+
+
+pub fn find_filename(path: &str, recurse: bool, afn: 
+    &mut impl FnMut(&str, &str) -> bool) -> bool {
+    if let Ok(dir) = fs::read_dir(path) {
+        for entry in dir {
+            if let Ok(entry) = entry {
+                if let Ok(md) = entry.metadata() {
+                    if let Some(name) = entry.file_name().to_str() {
+                        if md.is_dir() {
+                            if recurse {
+                                let ap = path::join(&path, &name);
+                                if !find_filename(&ap, recurse, afn) {
+                                    return false;
+                                }
+                            }
+                        } else if afn(&name, &path) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    true
+}
+
+
+pub fn list_filenames(path: &str, afn: &mut impl FnMut(&str, &str)) {
+    if let Ok(dir) = fs::read_dir(path) {
+        for entry in dir {
+            if let Ok(entry) = entry {
+                if let Ok(md) = entry.metadata() {
+                    if let Some(name) = entry.file_name().to_str() {
+                        if md.is_file() {
+                            afn(&name, &path);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
