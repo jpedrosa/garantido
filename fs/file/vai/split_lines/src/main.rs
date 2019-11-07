@@ -15,7 +15,7 @@ fn print_help() {
     println!(
 r#"Program to split file lines.
 
-Usage: split_lines <--file c:\path\to\file.txt> [option]
+Usage: split_lines <--file c:\path\to\file.txt> <--range nfrom..nto> [option]
     --file|-f         - Path to file to read the lines from.
     --range|-r        - Range from line number up to line number (exclusive).
                 E.g.: --range 0..5000  Where the first or last number can be
@@ -77,10 +77,9 @@ fn main() -> std::io::Result<()> {
         .add_alias("-r", "--range")
         .add("--help", CT::Flag)
         .parse(a[1..].to_vec());
-    let file_path = opts.get("--file").expect("Expected --file value.");
-    let mut from_number: usize = 0;
-    let mut to_number: usize = std::usize::MAX;
     if let Some(s) = opts.get("--range") {
+        let mut from_number: usize = 0;
+        let mut to_number: usize = std::usize::MAX;
         let re = Regex::new("^(\\d+)?\\.\\.(\\d+)?$").unwrap();
         let m = re.captures(&s)
             .expect("Expected --range n..n of types usize..usize.");
@@ -96,6 +95,7 @@ fn main() -> std::io::Result<()> {
                     than the from_number (n).");
             }
         }
+        let file_path = opts.get("--file").expect("Expected --file value.");
         return split_lines(&file_path, from_number, to_number);
     }
     if let Some(_) = opts.get("--help") {
