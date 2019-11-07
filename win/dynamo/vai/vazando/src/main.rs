@@ -308,7 +308,6 @@ impl FingerprintMatcher {
         let mut list: Vec<Cell> = Vec::new();
         let mut xlist: i32 = -1;
         let mut ylist: i32 = -1;
-        let mut match_group = 0;
         for i in 0..self.items.len() {
             let item = &mut self.items[i];
             if item.x != xlist || item.y != ylist {
@@ -318,7 +317,6 @@ impl FingerprintMatcher {
             }
             let mut match_count = 0.0;
             for fpcell in &item.table {
-                // println!("{} || {}", cells[10].avg_light, fpcell.avg_light);
                 let avg = list[fpcell.index].avg_light as i32;
                 let fp_avg = fpcell.avg_light as i32;
                 if fp_avg >= avg - tier1 && fp_avg <= avg + tier1 {
@@ -326,18 +324,6 @@ impl FingerprintMatcher {
                 } else if fp_avg >= avg - tier2 && fp_avg <= avg + tier2 {
                     match_count += 0.8;
                 }
-            }
-            // println!("match count {}", match_count);
-            // if match_count > 60.0 {
-            //     println!("match count {}", match_count);
-            // }
-            if match_count > 70.0 {
-                println!("match count {}", match_count);
-                if match_group > 0 {
-                    item.match_count += 1;
-                    return Some(i);
-                }
-                match_group += 1;
             }
             if match_count >= 80.0 {
                 println!("match count {}", match_count);
@@ -481,7 +467,7 @@ fn main() {
         run(&db_path, &label);
     }
     if let Some(_) = opts.get("--help") {
-        dynamo::left_click();
+        print_help();
     }
     if opts.is_empty() {
         print_help();
