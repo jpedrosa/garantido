@@ -22,13 +22,14 @@ Usage: split_lines <--file c:\path\to\file.txt> <--range nfrom..nto> [option]
                 ommitted. --range ..5000 is the same as 0..5000
                 If the last number is ommitted it will go to the last line
                 number found on the targeted file.
+    --output|-o       - File to save to instead of just printing it to stdout.
     --help            - Shows this help.
 "#);
 }
 
-fn split_lines(file_path: &str, from_number: usize, to_number: usize) 
-    -> std::io::Result<()> {
-    let mut file = File::open(&file_path)?;
+fn split_lines(file_path: &str, from_number: usize, to_number: usize,
+    output: Option<String>) -> std::io::Result<()> {
+    let file = File::open(&file_path)?;
     let mut buf_reader = BufReader::new(file);
     let mut lines: Vec<u8> = Vec::with_capacity(1024 * 1024);
     let mut buf = buf_reader.fill_buf()?;
@@ -64,8 +65,11 @@ fn split_lines(file_path: &str, from_number: usize, to_number: usize)
         buf = buf_reader.fill_buf()?;
         len = buf.len();
     }
-    io::stdout().write_all(&lines);
-    Ok(())
+    if let Some(o) = output {
+        return fs::write(o, &lines);
+    }
+    io::stdout().write_all(&lines)
+    // Ok(())
 }
 
 fn main() -> std::io::Result<()> {
@@ -75,6 +79,8 @@ fn main() -> std::io::Result<()> {
         .add_alias("-f", "--file")
         .add("--range", CT::CTString)
         .add_alias("-r", "--range")
+        .add("--output", CT::CTString)
+        .add_alias("-o", "--output")
         .add("--help", CT::Flag)
         .parse(a[1..].to_vec());
     if let Some(s) = opts.get("--range") {
@@ -96,7 +102,8 @@ fn main() -> std::io::Result<()> {
             }
         }
         let file_path = opts.get("--file").expect("Expected --file value.");
-        return split_lines(&file_path, from_number, to_number);
+        return split_lines(&file_path, from_number, to_number, 
+            opts.get("--output"));
     }
     if let Some(_) = opts.get("--help") {
         print_help();
