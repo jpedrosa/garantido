@@ -23,31 +23,33 @@ Usage: asgard <--file c:\path\to\file.txt>
 fn check(file_path: &str,) -> std::io::Result<()> {
     let file = File::open(&file_path)?;
     let md = file.metadata()?;
-    // println!("md {:?}", md);
     let buf_reader = BufReader::with_capacity(md.len() as usize, file);
     let mut dims: u32 = 0;
     let mut good_count = 0;
     let mut max_len: f64 = 0.0;
     let mut max_word = String::new();
     let re = Regex::new("^[a-zæøåé]+\\-?[a-zæøåé]*$").unwrap();
+    let mut got_header = false;
     for line in buf_reader.lines() {
         let line = line?;
-        let parts = line.split(" ").collect::<Vec<_>>();
-        if parts.len() <= 3 {
-            let word_lines = parts[0].parse::<u32>().unwrap();
-            dims = parts[1].parse::<u32>().unwrap();
+        let mut parts = line.split(" ");
+        let k = parts.next().unwrap();
+        if !got_header {
+            got_header = true;
+            let word_lines = k.parse::<u32>().unwrap();
+            dims = parts.next().unwrap().parse::<u32>().unwrap();
             println!("{} word lines, {} dimensions", word_lines, dims);
-        } else if re.is_match(parts[0]) {
+        } else if re.is_match(&k) {
             let mut sum_of_squares: f64 = 0.0;
-            for i in 1..dims as usize + 1 {
-                let d = parts[i].parse::<f64>().unwrap();
+            while let Some(p) = parts.next() {
+                let d = p.parse::<f64>().unwrap();
                 sum_of_squares += d * d;
             }
             let vlen = sum_of_squares.sqrt();
             good_count += 1;
             if vlen > max_len {
                 max_len = vlen;
-                max_word = parts[0].to_string();
+                max_word = k.to_string();
             }
         }
     }
