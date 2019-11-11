@@ -61,8 +61,12 @@ fn main() -> std::io::Result<()> {
                         }
                     } else if c == 'n' && escape {
                         z.push('\n');
+                        escape = false;
                     } else {
                         z.push(c);
+                        if escape {
+                            escape = false;
+                        }
                     }
                 }
             } else {
