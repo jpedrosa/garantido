@@ -2,6 +2,7 @@
 // Copyright (c) 2019 Joao Pedrosa
 
 use std::collections::HashMap;
+use std::env;
 
 
 #[derive(Debug, PartialEq)]
@@ -96,6 +97,15 @@ impl AliasOpts {
             i += 1;
         }
         self
+    }
+
+    pub fn parse_args(&mut self) -> &mut AliasOpts {
+        let a: Vec<String> = env::args().collect();
+        self.parse(a[1..].to_vec())
+    }
+
+    pub fn got(&self, k: &str) -> bool {
+        self.values.get(k) != None
     }
 
     pub fn get(&self, k: &str) -> Option<String> {

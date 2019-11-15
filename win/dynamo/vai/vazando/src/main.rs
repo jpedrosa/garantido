@@ -427,7 +427,6 @@ Usage: vazando <--path c:\path\to\db\> [option]
 }
 
 fn main() {
-    let a: Vec<String> = env::args().collect();
     let mut opts = AliasOpts::new();
     opts.add("--grab_at", CT::CTString)
         .add("--write_at", CT::CTString)
@@ -435,7 +434,11 @@ fn main() {
         .add("--label", CT::CTString)
         .add("--run", CT::Flag)
         .add("--help", CT::Flag)
-        .parse(a[1..].to_vec());
+        .parse_args();
+    if opts.is_empty() || opts.got("--help") {
+        print_help();
+        return;
+    }
     let path = opts.get("--path").expect("Expected --path value.");
     let db_path = path::join(&path, "fullscreen");
     let mut label = String::new();
@@ -465,12 +468,6 @@ fn main() {
     }
     if let Some(s) = opts.get("--run") {
         run(&db_path, &label);
-    }
-    if let Some(_) = opts.get("--help") {
-        print_help();
-    }
-    if opts.is_empty() {
-        print_help();
     }
 }
 
