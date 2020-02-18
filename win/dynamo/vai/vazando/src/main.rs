@@ -344,14 +344,16 @@ impl FingerprintMatcher {
         item.filename = new_filename;
     }
 
-    fn match_click(&mut self, sm: &ScreenMeister, x: i32, y: i32) {
+    fn match_click(&mut self, sm: &ScreenMeister, x: i32, y: i32) -> bool {
         if let Some(index) = self.do_match(&sm) {
             self.update_item(index);
             let cp = cursor_position();
             move_cursor(x, y);
             left_click();
             move_cursor(cp.x, cp.y);
+            return true;
         }
+        false
     }
 
 }
@@ -362,30 +364,61 @@ const XTARGET_SKIP_AD_WINDOW: i32 = 1808;
 const YTARGET_SKIP_AD_WINDOW: i32 = 864;
 
 fn run(path: &str, label: &str) {
-    let dur = Duration::from_millis(4000);
+    let find_dur = Duration::from_millis(3000);
+    let confirm_dur = Duration::from_millis(1000);
+    let cooldown_dur = Duration::from_millis(120000);
     let mut fm = FingerprintMatcher::new();
+    let mut confirm = false;
+    let mut repeat_count = 0;
     fm.load_all(path);
     let mut sm = ScreenMeister::new();
     sm.setup();
     loop {
-        let starttime = Instant::now();
+        confirm = false;
         sm.grab_surface();
-        // println!("Elapsed 1: {}", starttime.elapsed().as_millis());
         sm.lock_rect();
-        // println!("Elapsed 2: {}", starttime.elapsed().as_millis());
-        // sm.write("e:\\t_\\paris.html", 112, 10, 20, 20);
-        // sm.write("e:\\t_\\paris.html", 112, 150, 20, 20);
-        // let cells = sm.list_cells(112, 10, 20, 20);
-        // let cells = sm.list_cells(XTARGET_SKIP_AD_FULLSCREEN, YTARGET_SKIP_AD_FULLSCREEN, 20, 20);
-        // sm.store_fingerprint(path, &label, 112, 10, 20, 20);
-        // println!("match {:?}", fm.do_match(&cells));
-        // fm.match_click(&cells, XTARGET_SKIP_AD_WINDOW, YTARGET_SKIP_AD_WINDOW);
-        // fm.match_click(&cells, 112, 10);
-        fm.match_click(&sm, XTARGET_SKIP_AD_FULLSCREEN, YTARGET_SKIP_AD_FULLSCREEN);
-        // println!("novo {:?}", fm);
+        if let Some(_) = fm.do_match(&sm) {
+            println!("*Found match*");
+            confirm = true;
+        }
         sm.unlock_rect();
-        // println!("Elapsed 3: {}", starttime.elapsed().as_millis());
-        sleep(dur);
+
+        if confirm {
+            sleep(confirm_dur);
+            // let starttime = Instant::now();
+            sm.grab_surface();
+            // println!("Elapsed 1: {}", starttime.elapsed().as_millis());
+            sm.lock_rect();
+            // println!("Elapsed 2: {}", starttime.elapsed().as_millis());
+            // sm.write("e:\\t_\\paris.html", 112, 10, 20, 20);
+            // sm.write("e:\\t_\\paris.html", 112, 150, 20, 20);
+            // let cells = sm.list_cells(112, 10, 20, 20);
+            // let cells = sm.list_cells(XTARGET_SKIP_AD_FULLSCREEN, YTARGET_SKIP_AD_FULLSCREEN, 20, 20);
+            // sm.store_fingerprint(path, &label, 112, 10, 20, 20);
+            // println!("match {:?}", fm.do_match(&cells));
+            // fm.match_click(&cells, XTARGET_SKIP_AD_WINDOW, YTARGET_SKIP_AD_WINDOW);
+            // fm.match_click(&cells, 112, 10);
+            if fm.match_click(&sm, XTARGET_SKIP_AD_FULLSCREEN,
+                YTARGET_SKIP_AD_FULLSCREEN) {
+                repeat_count += 1;
+                println!("*Confirmed match*");
+            } else {
+                repeat_count = 0;
+            }
+            // println!("novo {:?}", fm);
+            sm.unlock_rect();
+            // println!("Elapsed 3: {}", starttime.elapsed().as_millis());
+        } else {
+            repeat_count = 0;
+        }
+
+        if repeat_count > 1 {
+            repeat_count = 0;
+            println!("*cooldown*");
+            sleep(cooldown_dur);
+        } else {
+            sleep(find_dur);
+        }
     }
     sm.release();
 }
