@@ -384,6 +384,7 @@ fn run(path: &str, label: &str) {
         sm.unlock_rect();
 
         if confirm {
+            println!("confirming...");
             sleep(confirm_dur);
             // let starttime = Instant::now();
             sm.grab_surface();
