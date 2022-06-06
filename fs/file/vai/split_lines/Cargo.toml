@@ -8,4 +8,4 @@ edition = "2018"
 
 [dependencies]
 aliasopts = { path = "../../../opts/aliasopts" }
-regex = "^1.3.1"
+regex = "^1.5.5"
