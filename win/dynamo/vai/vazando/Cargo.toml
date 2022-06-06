@@ -18,4 +18,4 @@ dynamo = { path = "../../" }
 path = { path = "../../../../fs/dir/path/" }
 search_files = { path = "../../../../fs/dir/search_files/" }
 aliasopts = { path = "../../../../fs/opts/aliasopts/" }
-regex = "1.3.1"
+regex = "1.5.5"
